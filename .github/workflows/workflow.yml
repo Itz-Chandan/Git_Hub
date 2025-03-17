@@ -1,15 +1,30 @@
-name: "Hello world Workflow"
+name: "Python CI"
 
 # Controls when the action will run. triggers the workflow on push done to master or production branch.
 on:
 push:
-branches:
-- mster
-- production
+branches: [ main ]
+pull_request:
+branches: [ main ]
 
 jobs:
-hello_world:
+test:
+name: Run python test
 runs-on: ubuntu-latast
+
 steps:
--name: "Print Hello world"
-run: echo "Hello Git Workflow"
+-name: Checkout Repository
+users: actions/checkout@v3
+
+-name: Set up python
+users: actions/setup-python@v4
+with:
+python-version: "3.10"
+-name: Install Dependencies
+run: |
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+pip install pytest # Ensure pytest is installed
+
+-name: Run Tests
+run: python -m pytest test/ # Run pytest explicitly
